@@ -1,7 +1,7 @@
 import 'package:chatapp/models/chat_user.dart';
+import 'package:chatapp/screen/auth/api.dart';
 import 'package:chatapp/screen/profile.dart';
 import 'package:chatapp/widgets/chat_user_card.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('users').snapshots(),
+        stream: Api.getAllUsers(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:

@@ -13,7 +13,7 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    mq = MediaQuery.of(context).size;
+    final mq = MediaQuery.of(context).size;
 
     Future<UserCredential?> signInWithGoogle() async {
       try {

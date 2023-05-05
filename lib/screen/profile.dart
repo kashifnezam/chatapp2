@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatapp/helper/dialogs.dart';
 import 'package:chatapp/models/chat_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -19,14 +21,21 @@ class Profile extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () => {
-                FirebaseAuth.instance.signOut(),
-                GoogleSignIn().signOut(),
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AuthScreen(),
-                  ),
-                ),
+                Dialogs.showProgressbar(context),
+                FirebaseAuth.instance.signOut().then(
+                      (value) => GoogleSignIn().signOut().then(
+                        (value) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AuthScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
               },
           icon: const Icon(Icons.logout_outlined),
           label: const Text("Logout")),
@@ -38,16 +47,35 @@ class Profile extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: CachedNetworkImage(
-                height: 170,
-                fit: BoxFit.fill,
-                imageUrl: users.image,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                    height: 170,
+                    fit: BoxFit.fill,
+                    imageUrl: users.image,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+                ),
+                Positioned(
+                  top: mq.height * 0.15,
+                  left: mq.width * 0.25,
+                  child: MaterialButton(
+                    onPressed: () => {},
+                    height: 45,
+                    shape: const CircleBorder(),
+                    color: Colors.lightBlue,
+                    child: const Icon(
+                      Icons.camera_enhance_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ],
             ),
             const SizedBox(
               height: 10,

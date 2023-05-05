@@ -29,4 +29,8 @@ class Api {
         pushToken: "");
     return firestore.collection("users").doc(user.uid).set(chatUser.toJson());
   }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+    return firestore.collection('users').snapshots();
+  }
 }
