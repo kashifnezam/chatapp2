@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/chat_user.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +20,13 @@ class _MyChatState extends State<MyChat> {
         margin: const EdgeInsets.all(5),
         child: ListTile(
           subtitle: Text(widget.user.course),
-          leading: const CircleAvatar(
-            foregroundImage: NetworkImage("https://t.ly/mDUd"),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: CachedNetworkImage(
+              imageUrl: widget.user.image,
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
           ),
           title: Text(widget.user.name),
           trailing: const Text("12:55 PM"),

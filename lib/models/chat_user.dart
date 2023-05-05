@@ -46,7 +46,7 @@ class ChatUser {
     data['is_online'] = isOnline;
     data['id'] = id;
     data['push_token'] = pushToken;
-    data['email'] = pushToken;
+    data['email'] = email;
     return data;
   }
 }

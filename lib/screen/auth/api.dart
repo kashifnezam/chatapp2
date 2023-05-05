@@ -17,7 +17,7 @@ class Api {
 
   static Future<void> createUsers() async {
     final chatUser = ChatUser(
-        image: "",
+        image: user.photoURL.toString(),
         name: user.displayName.toString(),
         about: "Created by Kashif",
         createdAt: DateTime.now().microsecondsSinceEpoch.toString(),

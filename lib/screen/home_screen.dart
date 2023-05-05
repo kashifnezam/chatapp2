@@ -1,13 +1,9 @@
-//import 'package:chatapp/widgets/chat_user_card.dart';
-
 import 'package:chatapp/models/chat_user.dart';
+import 'package:chatapp/screen/profile.dart';
 import 'package:chatapp/widgets/chat_user_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'auth/authentication.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,19 +17,18 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         title: const Text("My App"),
         actions: [
+          IconButton(onPressed: () => {}, icon: const Icon(Icons.search)),
           IconButton(
               onPressed: () => {
-                    FirebaseAuth.instance.signOut(),
-                    GoogleSignIn().signOut(),
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AuthScreen(),
-                      ),
-                    ),
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Profile(
+                            users: name[0],
+                          ),
+                        ))
                   },
-              icon: const Icon(Icons.search)),
-          IconButton(onPressed: () => {}, icon: const Icon(Icons.more_vert))
+              icon: const Icon(Icons.more_vert))
         ],
       ),
       body: StreamBuilder(
