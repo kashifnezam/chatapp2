@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Api {
+  static late ChatUser mydata;
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static User get user => auth.currentUser!;
@@ -13,6 +14,20 @@ class Api {
             .doc(auth.currentUser!.uid)
             .get())
         .exists;
+  }
+
+  static Future<void> getMyData() async {
+    await firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .get()
+        .then((user) async {
+      if (user.exists) {
+        mydata = ChatUser.fromJson(user.data()!);
+      } else {
+        await createUsers().then((value) => getMyData());
+      }
+    });
   }
 
   static Future<void> createUsers() async {
@@ -31,6 +46,15 @@ class Api {
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
-    return firestore.collection('users').snapshots();
+    return firestore
+        .collection('users')
+        .where("id", isNotEqualTo: user.uid)
+        .snapshots();
+  }
+
+  static Future<void> updateUsers() async {
+    await firestore.collection('users').doc(user.uid).update(
+      {'name': mydata.name, 'about': mydata.about},
+    );
   }
 }

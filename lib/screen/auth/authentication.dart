@@ -3,7 +3,6 @@ import 'package:chatapp/screen/auth/api.dart';
 import 'package:chatapp/screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chatapp/main.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../helper/dialogs.dart';
@@ -29,7 +28,7 @@ class AuthScreen extends StatelessWidget {
           idToken: googleAuth?.idToken,
         );
         // Once signed in, return the UserCredential
-        return await FirebaseAuth.instance.signInWithCredential(credential);
+        return await Api.auth.signInWithCredential(credential);
       } catch (e) {
         debugPrint("Internet Not Availabe: $e");
       }
