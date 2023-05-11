@@ -4,9 +4,12 @@ class Dialogs {
   static void showMsgbar(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          msg,
-          style: const TextStyle(fontSize: 20),
+        content: Align(
+          alignment: Alignment.topCenter,
+          child: Text(
+            msg,
+            style: const TextStyle(fontSize: 20),
+          ),
         ),
         behavior: SnackBarBehavior.fixed,
       ),

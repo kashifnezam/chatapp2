@@ -19,6 +19,69 @@ class _ProfileState extends State<Profile> {
   final _fromKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    void _showBottom() {
+      showModalBottomSheet(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+            ),
+          ),
+          context: context,
+          builder: (_) {
+            return ListView(
+              padding: const EdgeInsets.only(
+                  top: 30, bottom: 50, right: 15, left: 20),
+              shrinkWrap: true,
+              children: [
+                const Text(
+                  "Profile Picture",
+                  // textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => {},
+                      child: const Column(
+                        children: [
+                          Icon(
+                            size: 122,
+                            Icons.camera,
+                          ),
+                          Text("Gallary"),
+                          SizedBox(
+                            height: 5,
+                          ),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => {},
+                      child: const Column(
+                        children: [
+                          Icon(
+                            size: 122,
+                            Icons.add_photo_alternate_rounded,
+                          ),
+                          Text("Gallary"),
+                          SizedBox(
+                            height: 5,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            );
+          });
+    }
+
     final mq = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -27,6 +90,7 @@ class _ProfileState extends State<Profile> {
           centerTitle: true,
           title: const Text("Profile"),
         ),
+        resizeToAvoidBottomInset: false,
         floatingActionButton: FloatingActionButton.extended(
             onPressed: () => {
                   Dialogs.showProgressbar(context),
@@ -76,7 +140,7 @@ class _ProfileState extends State<Profile> {
                         top: mq.height * 0.15,
                         left: mq.width * 0.25,
                         child: MaterialButton(
-                          onPressed: () => {},
+                          onPressed: () => _showBottom(),
                           height: 45,
                           shape: const CircleBorder(),
                           color: Colors.lightBlue,
@@ -146,8 +210,9 @@ class _ProfileState extends State<Profile> {
                       if (_fromKey.currentState!.validate())
                         {
                           _fromKey.currentState!.save(),
-                          Api.updateUsers,
+                          Api.updateUsers(),
                           debugPrint("Kashif tussi greate ho"),
+                          Dialogs.showMsgbar(context, "Changes Updated!")
                         }
                     },
                     color: Colors.blue[300],
