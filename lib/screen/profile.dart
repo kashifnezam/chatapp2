@@ -4,6 +4,7 @@ import 'package:chatapp/models/chat_user.dart';
 import 'package:chatapp/screen/auth/api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'auth/authentication.dart';
 
@@ -19,7 +20,11 @@ class _ProfileState extends State<Profile> {
   final _fromKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    void _showBottom() {
+    void pop() {
+      Navigator.pop(context, true); // dialog returns true
+    }
+
+    void showBottom() {
       showModalBottomSheet(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -46,7 +51,16 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: () => {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        // Pick an image.
+                        final XFile? image =
+                            await picker.pickImage(source: ImageSource.gallery);
+                        if (image != null) {
+                          debugPrint("Image: ${image.path}");
+                          pop();
+                        }
+                      },
                       child: const Column(
                         children: [
                           Icon(
@@ -140,7 +154,7 @@ class _ProfileState extends State<Profile> {
                         top: mq.height * 0.15,
                         left: mq.width * 0.25,
                         child: MaterialButton(
-                          onPressed: () => _showBottom(),
+                          onPressed: () => showBottom(),
                           height: 45,
                           shape: const CircleBorder(),
                           color: Colors.lightBlue,
