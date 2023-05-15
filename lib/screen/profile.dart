@@ -19,14 +19,13 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String? pImage;
   final _fromKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     void pop() {
       Navigator.pop(context, true); // dialog returns true
     }
-
-    String? pImage;
 
     void showBottom() {
       showModalBottomSheet(
@@ -149,7 +148,7 @@ class _ProfileState extends State<Profile> {
                               child: Image.file(
                                 File(pImage!),
                                 height: 170,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
                               ),
                             )
                           : ClipRRect(
