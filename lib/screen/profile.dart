@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/helper/dialogs.dart';
 import 'package:chatapp/models/chat_user.dart';
@@ -23,6 +25,8 @@ class _ProfileState extends State<Profile> {
     void pop() {
       Navigator.pop(context, true); // dialog returns true
     }
+
+    String? pImage;
 
     void showBottom() {
       showModalBottomSheet(
@@ -58,7 +62,9 @@ class _ProfileState extends State<Profile> {
                             await picker.pickImage(source: ImageSource.gallery);
                         if (image != null) {
                           debugPrint("Image: ${image.path}");
-                          pop();
+                          setState(() {
+                            pImage = image.path;
+                          });
                         }
                       },
                       child: const Column(
@@ -82,7 +88,7 @@ class _ProfileState extends State<Profile> {
                             size: 122,
                             Icons.add_photo_alternate_rounded,
                           ),
-                          Text("Gallary"),
+                          Text("Camera"),
                           SizedBox(
                             height: 5,
                           ),
@@ -96,7 +102,6 @@ class _ProfileState extends State<Profile> {
           });
     }
 
-    final mq = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -138,21 +143,30 @@ class _ProfileState extends State<Profile> {
                   ),
                   Stack(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: CachedNetworkImage(
-                          height: 170,
-                          fit: BoxFit.fill,
-                          imageUrl: widget.users.image,
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
+                      pImage != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.file(
+                                File(pImage!),
+                                height: 170,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: CachedNetworkImage(
+                                height: 170,
+                                fit: BoxFit.fill,
+                                imageUrl: widget.users.image,
+                                placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator()),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                            ),
                       Positioned(
-                        top: mq.height * 0.15,
-                        left: mq.width * 0.25,
+                        bottom: 0,
+                        right: 0,
                         child: MaterialButton(
                           onPressed: () => showBottom(),
                           height: 45,
@@ -226,6 +240,7 @@ class _ProfileState extends State<Profile> {
                           _fromKey.currentState!.save(),
                           Api.updateUsers(),
                           debugPrint("Kashif tussi greate ho"),
+                          FocusScope.of(context).unfocus(),
                           Dialogs.showMsgbar(context, "Changes Updated!")
                         }
                     },
