@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:chatapp/models/chat_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
 class Api {
   static late ChatUser mydata;
@@ -44,7 +47,10 @@ class Api {
         id: user.uid,
         email: user.email.toString(),
         pushToken: "");
-    return firestore.collection("users").doc(user.uid).set(chatUser.toJson());
+    return await firestore
+        .collection("users")
+        .doc(user.uid)
+        .set(chatUser.toJson());
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
@@ -58,5 +64,19 @@ class Api {
     await firestore.collection('users').doc(user.uid).update(
       {'name': mydata.name, 'about': mydata.about},
     );
+  }
+
+  static Future<void> updateProfilePic(File file) async {
+    final ext = file.path.split('.').last;
+    final ref = storage.ref().child("Profile Picture/${user.uid}.$ext");
+    await ref
+        .putFile(file, SettableMetadata(contentType: "image/$ext"))
+        .then((p0) {
+      debugPrint('Data Transefered : ${p0.bytesTransferred / 1024} KB');
+    });
+    mydata.image = await ref.getDownloadURL();
+    await firestore.collection('users').doc(user.uid).update({
+      'image': mydata.image,
+    });
   }
 }

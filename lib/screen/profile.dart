@@ -39,7 +39,7 @@ class _ProfileState extends State<Profile> {
           builder: (_) {
             return ListView(
               padding: const EdgeInsets.only(
-                  top: 30, bottom: 50, right: 15, left: 20),
+                  top: 30, bottom: 80, right: 15, left: 20),
               shrinkWrap: true,
               children: [
                 const Text(
@@ -57,13 +57,15 @@ class _ProfileState extends State<Profile> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         // Pick an image.
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery);
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.gallery, imageQuality: 70);
                         if (image != null) {
                           debugPrint("Image: ${image.path}");
                           setState(() {
                             pImage = image.path;
                           });
+                          Api.updateProfilePic(File(pImage!));
+                          pop();
                         }
                       },
                       child: const Column(
@@ -80,7 +82,19 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () => {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? photo = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 70);
+                        if (photo != null) {
+                          debugPrint("path is: ${photo.path}");
+                          setState(() {
+                            pImage = photo.path;
+                          });
+                          Api.updateProfilePic(File(pImage!));
+                          pop();
+                        }
+                      },
                       child: const Column(
                         children: [
                           Icon(
@@ -148,14 +162,16 @@ class _ProfileState extends State<Profile> {
                               child: Image.file(
                                 File(pImage!),
                                 height: 170,
-                                fit: BoxFit.fill,
+                                width: 170,
+                                fit: BoxFit.cover,
                               ),
                             )
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(100),
                               child: CachedNetworkImage(
                                 height: 170,
-                                fit: BoxFit.fill,
+                                width: 170,
+                                fit: BoxFit.cover,
                                 imageUrl: widget.users.image,
                                 placeholder: (context, url) => const Center(
                                     child: CircularProgressIndicator()),
@@ -165,15 +181,15 @@ class _ProfileState extends State<Profile> {
                             ),
                       Positioned(
                         bottom: 0,
-                        right: 0,
+                        right: -20,
                         child: MaterialButton(
                           onPressed: () => showBottom(),
                           height: 45,
                           shape: const CircleBorder(),
-                          color: Colors.lightBlue,
+                          color: Colors.white,
                           child: const Icon(
                             Icons.camera_enhance_rounded,
-                            color: Colors.white,
+                            color: Colors.lightBlue,
                           ),
                         ),
                       )
@@ -230,7 +246,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   const SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
                   MaterialButton(
                     onPressed: () => {

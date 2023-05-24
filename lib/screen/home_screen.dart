@@ -2,7 +2,6 @@ import 'package:chatapp/models/chat_user.dart';
 import 'package:chatapp/screen/auth/api.dart';
 import 'package:chatapp/screen/profile.dart';
 import 'package:chatapp/widgets/chat_user_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
