@@ -66,6 +66,7 @@ class AuthScreen extends StatelessWidget {
               left: mq.width * 0.16,
               top: mq.height * 0.16,
               width: mq.width * 0.7,
+              
               child: Image.asset('static/images/chat.png'),
             ),
             Positioned(

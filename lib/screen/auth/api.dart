@@ -79,4 +79,10 @@ class Api {
       'image': mydata.image,
     });
   }
+
+// ************** For our Chatt Screeeen ************** //
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages() {
+    return firestore.collection('messages').snapshots();
+  }
 }
