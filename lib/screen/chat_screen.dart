@@ -19,7 +19,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool isMessage = false;
-  late List<MessageChat> _list;
+  List<MessageChat> _list = [];
 
   @override
   Widget build(BuildContext context) {
@@ -134,51 +134,46 @@ class _ChatScreenState extends State<ChatScreen> {
           child: StreamBuilder(
             stream: Api.getMessages(),
             builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                case ConnectionState.none:
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                case ConnectionState.active:
-                case ConnectionState.done:
-                  final data = snapshot.data?.docs;
-                  debugPrint(jsonEncode(data![0].data()));
-                  // _list = data
-                  //         .map((e) => MessageChat.fromJson(e.data()))
-                  //         .toList() ??
-                  //     [];
-                  _list.clear();
-                  _list.add(MessageChat(
-                      msg: "I Love ",
-                      read: "13:02",
-                      told: "unknown",
-                      type: Type.text,
-                      sent: "14:22",
-                      fromId: "Kasghif"));
-                  _list.add(MessageChat(
-                      msg: "I Love you ",
-                      read: "14:02",
-                      told: "unknown2",
-                      type: Type.text,
-                      sent: "17:22",
-                      fromId: "Rif"));
-                  // final list = ['hi', 'this'];
-                  if (_list.isNotEmpty) {
-                    return ListView.builder(
-                        padding: const EdgeInsets.only(top: 5),
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: _list.length,
-                        itemBuilder: (context, index) =>
-                            MessageCard(message: _list[index]));
-                  } else {
-                    return const Center(
-                      child: Text(
-                        "Say Hi 👋",
-                        style: TextStyle(fontSize: 33),
-                      ),
-                    );
-                  }
+              final data = snapshot.data?.docs;
+              debugPrint(jsonEncode(data![0].data()));
+              _list = data
+                      .map((e) => MessageChat.fromJson(e.data()))
+                      .toList();
+              _list.clear();
+              // _list.add(
+              //   MessageChat(
+              //       msg: "I Love yoy sdyutf kladfic dswyr dthfg ",
+              //       read: "13:02",
+              //       told: "unknown",
+              //       type: Type.text,
+              //       sent: "14:22",
+              //       fromId: Api.user.uid),
+              // );
+              // _list.add(
+              //   MessageChat(
+              //       msg:
+              //           "I Love you fdfhfg ghffggh ghtghghf gvjghjfgj njhjghj hjtg ghtyryrfgjgjg ghgjhh fhfgszth dfytfhfgn ghtghfggjjjgjgjggjjjghkg ",
+              //       read: "14:02",
+              //       told: Api.user.uid,
+              //       type: Type.text,
+              //       sent: "17:22",
+              //       fromId: "Rif"),
+              // );
+              // // final list = ['hi', 'this'];
+              if (_list.isNotEmpty) {
+                return ListView.builder(
+                    padding: const EdgeInsets.only(top: 5),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: _list.length,
+                    itemBuilder: (context, index) =>
+                        MessageCard(message: _list[index]));
+              } else {
+                return const Center(
+                  child: Text(
+                    "Say Hi 👋",
+                    style: TextStyle(fontSize: 33),
+                  ),
+                );
               }
             },
           ),
