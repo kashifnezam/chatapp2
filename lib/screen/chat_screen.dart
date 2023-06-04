@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/chat_user.dart';
 import 'package:chatapp/models/message_chat.dart';
@@ -20,7 +18,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   bool isMessage = false;
   List<MessageChat> _list = [];
-
+  final textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -32,7 +30,6 @@ class _ChatScreenState extends State<ChatScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           centerTitle: true,
-          // title: Text(widget.user.name),
           flexibleSpace: _appBar(),
         ),
         body: _chatArea(),
@@ -100,25 +97,27 @@ class _ChatScreenState extends State<ChatScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                  padding: EdgeInsets.only(left: 30),
+                  padding: const EdgeInsets.only(left: 30),
                   onPressed: () => {},
                   icon: const Icon(
                     Icons.call,
                     color: Colors.white,
                   )),
               IconButton(
-                  padding: EdgeInsets.only(left: 20),
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.video_call_outlined,
-                    color: Colors.white,
-                  )),
+                padding: const EdgeInsets.only(left: 20),
+                onPressed: () => {},
+                icon: const Icon(
+                  Icons.video_call_outlined,
+                  color: Colors.white,
+                ),
+              ),
               IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.more_vert_sharp,
-                    color: Colors.white,
-                  )),
+                onPressed: () => {},
+                icon: const Icon(
+                  Icons.more_vert_sharp,
+                  color: Colors.white,
+                ),
+              ),
             ],
           )),
         ],
@@ -132,34 +131,13 @@ class _ChatScreenState extends State<ChatScreen> {
       children: [
         Expanded(
           child: StreamBuilder(
-            stream: Api.getMessages(),
+            stream: Api.getMessages(widget.user),
             builder: (context, snapshot) {
               final data = snapshot.data?.docs;
-              debugPrint(jsonEncode(data![0].data()));
-              _list = data
-                      .map((e) => MessageChat.fromJson(e.data()))
-                      .toList();
-              _list.clear();
-              // _list.add(
-              //   MessageChat(
-              //       msg: "I Love yoy sdyutf kladfic dswyr dthfg ",
-              //       read: "13:02",
-              //       told: "unknown",
-              //       type: Type.text,
-              //       sent: "14:22",
-              //       fromId: Api.user.uid),
-              // );
-              // _list.add(
-              //   MessageChat(
-              //       msg:
-              //           "I Love you fdfhfg ghffggh ghtghghf gvjghjfgj njhjghj hjtg ghtyryrfgjgjg ghgjhh fhfgszth dfytfhfgn ghtghfggjjjgjgjggjjjghkg ",
-              //       read: "14:02",
-              //       told: Api.user.uid,
-              //       type: Type.text,
-              //       sent: "17:22",
-              //       fromId: "Rif"),
-              // );
-              // // final list = ['hi', 'this'];
+              _list =
+                  data?.map((e) => MessageChat.fromJson(e.data())).toList() ??
+                      [];
+
               if (_list.isNotEmpty) {
                 return ListView.builder(
                     padding: const EdgeInsets.only(top: 5),
@@ -193,6 +171,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 Expanded(
                   child: TextField(
+                    controller: textController,
                     onChanged: (value) {
                       setState(() {
                         if (value == "") {
@@ -223,7 +202,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 isMessage
                     ? IconButton(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          if (textController.text.isNotEmpty)
+                            {
+                              Api.sendMessage(widget.user, textController.text),
+                              textController.text = '',
+                            }
+                        },
                         icon: const Icon(
                           Icons.send_outlined,
                           color: Colors.blueAccent,

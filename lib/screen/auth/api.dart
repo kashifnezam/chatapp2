@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chatapp/models/chat_user.dart';
+import 'package:chatapp/models/message_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -82,7 +83,32 @@ class Api {
 
 // ************** For our Chatt Screeeen ************** //
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages() {
-    return firestore.collection('messages').snapshots();
+  static String getConversationId(String id) {
+    return user.uid.hashCode <= id.hashCode
+        ? '${user.uid}_$id'
+        : '${id}_${user.uid}';
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(
+      ChatUser user) {
+    return firestore
+        .collection('chat/${getConversationId(user.id)}/messages/')
+        .snapshots();
+  }
+
+  static Future<void> sendMessage(ChatUser chatUser, String msg) async {
+    // time as ID
+    final time = DateTime.now().microsecondsSinceEpoch.toString();
+    // message to send
+    final MessageChat message = MessageChat(
+        msg: msg,
+        read: '',
+        told: chatUser.id,
+        type: Type.text,
+        sent: time,
+        fromId: user.uid);
+    final ref = firestore
+        .collection('chat/${getConversationId(chatUser.id)}/messages/');
+    await ref.doc().set(message.toJson());
   }
 }
