@@ -50,6 +50,8 @@ dependencies:
   cached_network_image: ^3.2.3
   # for picking the images from gallery/camera
   image_picker: ^0.8.7+5
+  # date time format
+  date_time_format: ^2.0.1
 
 dev_dependencies:
   flutter_test:

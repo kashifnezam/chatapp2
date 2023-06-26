@@ -62,8 +62,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   width: 35,
                   fit: BoxFit.cover,
                   imageUrl: widget.user.image,
-                  placeholder: (context, url) =>
-                      const Center(child: CircularProgressIndicator()),
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
@@ -97,12 +98,13 @@ class _ChatScreenState extends State<ChatScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                  padding: const EdgeInsets.only(left: 30),
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.call,
-                    color: Colors.white,
-                  )),
+                padding: const EdgeInsets.only(left: 30),
+                onPressed: () => {},
+                icon: const Icon(
+                  Icons.call,
+                  color: Colors.white,
+                ),
+              ),
               IconButton(
                 padding: const EdgeInsets.only(left: 20),
                 onPressed: () => {},
@@ -140,11 +142,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
               if (_list.isNotEmpty) {
                 return ListView.builder(
-                    padding: const EdgeInsets.only(top: 5),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: _list.length,
-                    itemBuilder: (context, index) =>
-                        MessageCard(message: _list[index]));
+                  padding: const EdgeInsets.only(top: 5),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: _list.length,
+                  itemBuilder: (context, index) =>
+                      MessageCard(message: _list[index]),
+                );
               } else {
                 return const Center(
                   child: Text(
