@@ -125,9 +125,12 @@ class Api {
     debugPrint("this is Kasif");
   }
 
+  ///last msg getting
   static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMsg(ChatUser user) {
     return firestore
         .collection('chat/${getConversationId(user.id)}/messages/')
+        .orderBy('sent', descending: true)
+        .limit(1)
         .snapshots();
   }
 }

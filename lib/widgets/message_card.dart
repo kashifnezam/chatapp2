@@ -5,7 +5,7 @@ import '../models/message_chat.dart';
 
 class MessageCard extends StatefulWidget {
   final MessageChat message;
-  
+
   const MessageCard({super.key, required this.message});
 
   @override
@@ -40,7 +40,12 @@ class _MessageCardState extends State<MessageCard> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               child: Column(
                 children: [
-                  Text(widget.message.msg),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 200,
+                    ),
+                    child: Text(widget.message.msg),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -94,7 +99,11 @@ class _MessageCardState extends State<MessageCard> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
-                  Text(widget.message.msg),
+                  Container(
+                      constraints: const BoxConstraints(
+                        maxWidth: 200,
+                      ),
+                      child: Text(widget.message.msg)),
                   Align(
                     alignment: Alignment.bottomRight,
                     heightFactor: 1.5,

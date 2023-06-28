@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
     return const Scaffold(
       body: Center(
-        child: Text("Welcome to This World"),
+        child: Text("Chatting App Developed By Md Kashif Nezam"),
       ),
     );
   }

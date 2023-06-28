@@ -4,7 +4,6 @@ import 'package:chatapp/models/message_chat.dart';
 import 'package:chatapp/widgets/message_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'auth/api.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -17,8 +16,10 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool isMessage = false;
+  MessageChat? message;
   List<MessageChat> _list = [];
   final textController = TextEditingController();
+  bool isEmoji = false;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -228,6 +229,8 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ),
+
+        // this is An Emoji Section
       ],
     );
   }

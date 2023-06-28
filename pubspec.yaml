@@ -53,6 +53,9 @@ dependencies:
   # date time format
   date_time_format: ^2.0.1
 
+  # For emoji
+  emoji_picker_flutter: ^1.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
