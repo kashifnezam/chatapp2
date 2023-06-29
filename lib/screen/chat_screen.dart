@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/models/chat_user.dart';
 import 'package:chatapp/models/message_chat.dart';
 import 'package:chatapp/widgets/message_card.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'auth/api.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -15,6 +18,11 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  String? pImage;
+  void pop() {
+    Navigator.pop(context, true); // dialog returns true
+  }
+
   bool isMessage = false;
   MessageChat? message;
   List<MessageChat> _list = [];
@@ -27,13 +35,28 @@ class _ChatScreenState extends State<ChatScreen> {
           systemNavigationBarColor: Colors.blue, statusBarColor: Colors.blue),
     );
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          flexibleSpace: _appBar(),
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: WillPopScope(
+          onWillPop: () {
+            if (isEmoji) {
+              setState(() {
+                isEmoji = !isEmoji;
+              });
+              return Future.value(false);
+            } else {
+              return Future.value(true);
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              flexibleSpace: _appBar(),
+            ),
+            body: _chatArea(),
+          ),
         ),
-        body: _chatArea(),
       ),
     );
   }
@@ -167,7 +190,12 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () => {},
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      isEmoji = !isEmoji;
+                    });
+                  },
                   icon: const Icon(
                     Icons.emoji_emotions_outlined,
                     color: Colors.blueAccent,
@@ -176,12 +204,22 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: textController,
+                    onTap: () {
+                      if (isEmoji) {
+                        setState(() {
+                          isEmoji = false;
+                        });
+                      }
+                    },
                     onChanged: (value) {
                       setState(() {
-                        if (value == "") {
+                        if (value.trimLeft() == '') {
+                          isMessage = false;
+                        } else if (value == "") {
                           isMessage = false;
                         } else {
                           isMessage = true;
+                          isEmoji = false;
                         }
                       });
                     },
@@ -191,7 +229,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => {},
+                  onPressed: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? photo = await picker.pickImage(
+                        source: ImageSource.gallery, imageQuality: 70);
+                    if (photo != null) {
+                      debugPrint("ChatImage Path $photo");
+                      setState(() {
+                        pImage = photo.path;
+                      });
+                      Api.chatImage(widget.user, File(pImage!));
+                    }
+                  },
                   icon: const Icon(
                     Icons.attach_file,
                     color: Colors.blueAccent,
@@ -209,7 +258,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         onPressed: () => {
                           if (textController.text.isNotEmpty)
                             {
-                              Api.sendMessage(widget.user, textController.text),
+                              Api.sendMessage(
+                                  widget.user, textController.text, Type.text),
                               textController.text = '',
                             }
                         },
@@ -231,6 +281,27 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
 
         // this is An Emoji Section
+        if (isEmoji)
+          SizedBox(
+            height: 240,
+            child: EmojiPicker(
+              textEditingController: textController,
+              onEmojiSelected: (category, emoji) {
+                setState(() {
+                  isMessage = true;
+                });
+              },
+              config: Config(
+                columns: 12,
+                bgColor: const Color.fromARGB(255, 226, 237, 247),
+                emojiSizeMax: 30 * (Platform.isIOS ? 1.30 : 1.0),
+                noRecents: const Text(
+                  'No Recents',
+                  style: TextStyle(fontSize: 20, color: Colors.black26),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

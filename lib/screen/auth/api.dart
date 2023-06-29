@@ -95,7 +95,8 @@ class Api {
         .snapshots();
   }
 
-  static Future<void> sendMessage(ChatUser chatUser, String msg) async {
+  static Future<void> sendMessage(
+      ChatUser chatUser, String msg, Type type) async {
     // time as ID
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     // message to send
@@ -103,7 +104,7 @@ class Api {
         msg: msg,
         read: '',
         told: chatUser.id,
-        type: Type.text,
+        type: type,
         sent: time,
         fromId: user.uid);
     final ref = firestore
@@ -132,5 +133,20 @@ class Api {
         .orderBy('sent', descending: true)
         .limit(1)
         .snapshots();
+  }
+
+  ///// Msg Images using gallery / Camera
+
+  static Future<void> chatImage(ChatUser chatuser, File file) async {
+    final ext = file.path.split('.').last;
+    final ref = storage.ref().child(
+        "Images/${getConversationId(chatuser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext");
+    await ref
+        .putFile(file, SettableMetadata(contentType: "image/$ext"))
+        .then((p0) {
+      debugPrint('Data Transefered : ${p0.bytesTransferred / 1024} KB');
+    });
+    final imageUrl = await ref.getDownloadURL();
+    await sendMessage(chatuser, imageUrl, Type.image);
   }
 }

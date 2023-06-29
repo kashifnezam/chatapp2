@@ -47,12 +47,16 @@ class _MyChatState extends State<MyChat> {
                 subtitle: _message != null
                     ? Text(
                         _message!.msg.length > 25
-                            ? "${_message!.msg.substring(0, 24)}..."
+                            ? _message!.type == Type.text
+                                ? "${_message!.msg.substring(0, 24)}..."
+                                : "📷 image"
                             : _message!.msg,
                         style: _message!.read.isEmpty
                             ? _message!.fromId == widget.user.id
                                 ? const TextStyle(
-                                    fontWeight: FontWeight.w900, fontSize: 16)
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16)
                                 : const TextStyle()
                             : null,
                       )

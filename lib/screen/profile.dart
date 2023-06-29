@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/helper/dialogs.dart';
 import 'package:chatapp/models/chat_user.dart';

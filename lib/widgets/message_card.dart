@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatapp/screen/auth/api.dart';
 import 'package:flutter/material.dart';
 
@@ -37,14 +38,32 @@ class _MessageCardState extends State<MessageCard> {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              padding: widget.message.type == Type.text
+                  ? const EdgeInsets.symmetric(horizontal: 10, vertical: 8)
+                  : const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
               child: Column(
                 children: [
                   Container(
                     constraints: const BoxConstraints(
                       maxWidth: 200,
                     ),
-                    child: Text(widget.message.msg),
+                    child: widget.message.type == Type.text
+                        ? Text(widget.message.msg)
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              height: 170,
+                              width: 170,
+                              fit: BoxFit.cover,
+                              imageUrl: widget.message.msg,
+                              placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) => const Icon(
+                                Icons.image,
+                                size: 70,
+                              ),
+                            ),
+                          ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -80,7 +99,9 @@ class _MessageCardState extends State<MessageCard> {
       debugPrint("updated");
     }
     return Padding(
-      padding: const EdgeInsets.only(right: 100, left: 10, top: 10, bottom: 10),
+      padding: widget.message.type == Type.text
+          ? const EdgeInsets.only(right: 100, left: 10, top: 10, bottom: 10)
+          : const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       child: Row(
         children: [
           Container(
@@ -100,10 +121,27 @@ class _MessageCardState extends State<MessageCard> {
               child: Column(
                 children: [
                   Container(
-                      constraints: const BoxConstraints(
-                        maxWidth: 200,
-                      ),
-                      child: Text(widget.message.msg)),
+                    constraints: const BoxConstraints(
+                      maxWidth: 200,
+                    ),
+                    child: widget.message.type == Type.text
+                        ? Text(widget.message.msg)
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              height: 170,
+                              width: 170,
+                              fit: BoxFit.cover,
+                              imageUrl: widget.message.msg,
+                              placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) => const Icon(
+                                Icons.image,
+                                size: 70,
+                              ),
+                            ),
+                          ),
+                  ),
                   Align(
                     alignment: Alignment.bottomRight,
                     heightFactor: 1.5,
